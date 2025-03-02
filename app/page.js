@@ -143,12 +143,12 @@ export default function Home() {
           {dashboardData.totalUsers}
         </p>
       </div>
-      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+      {/* <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
         <h2 className="text-base sm:text-lg font-semibold text-gray-700">Revenue</h2>
         <p className="text-xl sm:text-2xl font-bold text-green-600">
           ${dashboardData.revenue}
         </p>
-      </div>
+      </div> */}
       <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
         <h2 className="text-base sm:text-lg font-semibold text-gray-700">Conversion Rate</h2>
         <p className="text-xl sm:text-2xl font-bold text-purple-600">
