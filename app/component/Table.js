@@ -1,30 +1,63 @@
-export default function Table() {
-    const data = [
-      { id: 1, name: 'John Doe', amount: '$250', date: '2023-10-01' },
-      { id: 2, name: 'Jane Smith', amount: '$150', date: '2023-10-02' },
-      { id: 3, name: 'Alice Johnson', amount: '$350', date: '2023-10-03' },
-    ];
-  
-    return (
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead>
+import { useState } from "react";
+
+export default function VMCTable({ vmcData }) {
+  const [sortConfig, setSortConfig] = useState({ key: "time", direction: "asc" });
+
+  const sortedData = [...(vmcData?.entries || [])].sort((a, b) => {
+    if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "asc" ? -1 : 1;
+    if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  const handleSort = (key) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  return (
+    <div className="overflow-x-auto p-4">
+      <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
+        <thead className="bg-gray-100 text-gray-700">
           <tr>
-            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+            {["Time", "Spindle Speed (RPM)", "Temperature (°C)", "Power (kW)", "Status"].map(
+              (header, index) => (
+                <th
+                  key={index}
+                  className="p-3 border-b cursor-pointer hover:bg-gray-200"
+                  onClick={() => handleSort(header.toLowerCase().replace(/ /g, "_"))}
+                >
+                  {header} {sortConfig.key === header.toLowerCase().replace(/ /g, "_") ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                </th>
+              )
+            )}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {data.map((row) => (
-            <tr key={row.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{row.id}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{row.name}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{row.amount}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{row.date}</td>
+        <tbody>
+          {sortedData.map((entry, index) => (
+            <tr key={index} className="text-center border-b hover:bg-gray-50">
+              <td className="p-3">{entry.time}</td>
+              <td className="p-3">{entry.spindleSpeed} RPM</td>
+              <td className="p-3">{entry.temperature}°C</td>
+              <td className="p-3">{entry.power} kW</td>
+              <td
+                className={`p-3 font-semibold ${
+                  entry.status === "Running"
+                    ? "text-green-600"
+                    : entry.status === "Idle"
+                    ? "text-yellow-600"
+                    : entry.status === "Maintenance"
+                    ? "text-blue-600"
+                    : "text-red-600"
+                }`}
+              >
+                {entry.status}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-    );
-  }
+    </div>
+  );
+}

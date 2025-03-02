@@ -1,4 +1,4 @@
-import { Line } from 'react-chartjs-2';
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,7 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
+} from "chart.js";
 
 ChartJS.register(
   CategoryScale,
@@ -20,15 +20,22 @@ ChartJS.register(
   Legend
 );
 
-export default function LineChart() {
+export default function LineChart({ vmcData }) {
   const data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+    labels: vmcData?.timestamps || ["00:00", "01:00", "02:00", "03:00", "04:00"],
     datasets: [
       {
-        label: 'Sales',
-        data: [65, 59, 80, 81, 56, 55, 40],
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        label: "Spindle Speed (RPM)",
+        data: vmcData?.spindleSpeed || [1200, 1500, 1700, 1300, 1600],
+        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        tension: 0.4,
+      },
+      {
+        label: "Temperature (°C)",
+        data: vmcData?.temperature || [40, 45, 43, 47, 42],
+        borderColor: "rgba(255, 99, 132, 1)",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
         tension: 0.4,
       },
     ],
@@ -38,11 +45,11 @@ export default function LineChart() {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
       },
       title: {
         display: true,
-        text: 'Monthly Sales Data',
+        text: "VMC Machine Performance Over Time",
       },
     },
   };
